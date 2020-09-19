@@ -20,3 +20,5 @@ Name                | Description
 `REGION`            | The Digitalocean region that the target space exists in
 `SECRET_ACCESS_KEY` | The secret access key for the target space
 
+[s3cmd]: https://s3tools.org/s3cmd
+
