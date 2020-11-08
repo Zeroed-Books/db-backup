@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
 set -euf
-set -o pipefail
 
 errVarUnset() {
   >&2 echo "\$$1 is not set. Exiting."
@@ -24,7 +23,7 @@ if [ -z "${REGION+x}" ]; then
   errVarUnset 'REGION'
 fi
 
-if [ -z "${SECRET_ACCESS_KEY+z}" ]; then
+if [ -z "${SECRET_ACCESS_KEY+x}" ]; then
   errVarUnset 'SECRET_ACCESS_KEY'
 fi
 
@@ -34,11 +33,14 @@ host_base = ${REGION}.digitaloceanspaces.com
 host_bucket = %(bucket)s.${REGION}.digitaloceanspaces.com
 EOF
 
-echo -e "Wrote config:\n"
-cat "${HOME}/.s3cfg"
-echo -e "\n\n"
+cat <<EOF
+Wrote config:
+$(cat "${HOME}/.s3cfg")
 
+
+EOF
+
+# Pass in `-` as the input file which makes s3cmd read the input from stdin.
 AWS_ACCESS_KEY_ID="${ACCESS_KEY_ID}" \
   AWS_SECRET_ACCESS_KEY="${SECRET_ACCESS_KEY}" \
   s3cmd -c "${HOME}/.s3cfg" put - "s3://${BUCKET_NAME}/${BACKUP_FILE}"
-
